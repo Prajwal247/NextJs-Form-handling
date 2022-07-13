@@ -4,9 +4,13 @@ import { useRouter } from 'next/router'
 export default function index() {
     const router = useRouter();
     const toForm = () => {
-        router.push("/DonationForm")
+        if (localStorage.getItem("isLoggedIn") === "true") {
+            router.push("/DonationForm")
+        }else{
+            router.push("/login")
+        }
     }
-
+    
     return (
         <div className="text-center">
             <div className="header">

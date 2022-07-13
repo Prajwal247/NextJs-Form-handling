@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from 'next/router';
 import * as Yup from "yup";
 import { useFormik } from "formik";
 
 
 function DonationForm() {
 
+  const router = useRouter();
   const countries = [
     "Nepal", "India", "China", "United States", "United Kingdom", "Australia"
   ]
   const [isEligible, setIsEligible] = useState(true);
   const [isLoading, setIsloading] = useState(false);
 
+  useEffect(() => {
+    if(localStorage.getItem("isLoggedIn") !== "true"){
+      router.push("/")
+    }
+  }, [])
+  
   const nameRegex = /^[a-zA-Z ]*$/;
   const ValidationSchema = Yup.object().shape({
     country: Yup.string().required("Country is required"),

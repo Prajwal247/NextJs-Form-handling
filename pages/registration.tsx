@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { auth } from '../src/public/firebase';
+import {
+    createUserWithEmailAndPassword
+} from "firebase/auth";
 
 export default function Registration() {
 
+    const router = useRouter();
     const [validation, setValidation] = useState(true);
 
     const ValidationSchema = Yup.object().shape({
@@ -33,10 +39,24 @@ export default function Registration() {
         validationSchema: ValidationSchema,
 
         onSubmit: async (values: any) => {
-            console.log("helo")
-            console.log(values)
-        }
-    })
+            await createUserWithEmailAndPassword(auth,values.email,values.password1).
+            then(() => {
+
+                router.push("/login")
+            }).catch((e:any) => {
+                console.log((e))
+            })
+
+            const res = await fetch('https://console.firebase.google.com/u/2/project/blooddonation-71299/database/blooddonation-71299-default-rtdb/data/~2F',
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(values)
+
+        })
+    }})
 
     const validatePassword = (e: any) => {
         if (e.target.value === formik.values.password1) {
