@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import * as Yup from "yup";
 import { useFormik } from "formik";
+import { db } from "../src/public/firebase";
+import { doc, setDoc,collection } from "firebase/firestore";
 
 
 function DonationForm() {
@@ -10,7 +12,6 @@ function DonationForm() {
   const countries = [
     "Nepal", "India", "China", "United States", "United Kingdom", "Australia"
   ]
-  const [isEligible, setIsEligible] = useState(true);
   const [isLoading, setIsloading] = useState(false);
 
   useEffect(() => {
@@ -60,16 +61,18 @@ function DonationForm() {
     },
     validationSchema: ValidationSchema,
 
-    onSubmit: async(values) => {
-      const post = await fetch("api/api",{
-        method: "POST",
-        body: JSON.stringify(values),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      const data = await post.json()
-      console.log(data)
+    onSubmit: async(values: any) => {
+      setIsloading(true)
+      try{
+        const id = doc(collection(db, "bloodDonation")).id
+        const  newDonationRef = doc(db, "bloodDonation", id )
+        await setDoc(newDonationRef, values)
+      }catch{
+        alert("Some error occured try again later")
+      }finally{
+        router.push("/")
+      }
+     setIsloading(false)
     }
   })
 
@@ -340,7 +343,7 @@ function DonationForm() {
                   </label>
                 </div>
                 <div class="text-center">
-                  <button class="btn btn-primary btn-add" type="submit" onClick={() => formik.handleSubmit()}>
+                  <button class="btn btn-primary btn-add" type="submit" disabled={isLoading}>
                     Submit
                   </button>
                 </div>
