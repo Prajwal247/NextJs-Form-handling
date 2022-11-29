@@ -46,7 +46,7 @@ export default function index() {
       <div className="header">
         <h2 className="p-4 mt-2">Donate to Save Lives</h2>
         <p>
-          Thank you for your Decision to donate to the cause of saving lives.
+          Thank you for your donation to the cause of saving lives.
         </p>
         <small>
           {" "}
